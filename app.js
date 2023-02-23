@@ -2,6 +2,8 @@ const express = require('express');
 
 let app = express();
 
+const VALID_PETS = ['toby', 'scout'];
+
 // set up handlebars view engine
 let handlebars = require('express-handlebars')
 	.create({ defaultLayout:'main' });
@@ -17,6 +19,20 @@ app.get('/', function(req, res) {
 
 	res.render('home'); 
 });
+
+app.get('/vote/:pet', function (req, res) {
+	if (req.params.pet && VALID_PETS.includes(req.params.pet)) {
+		res.render('voted',
+			{
+				petName: req.params.pet,
+				isTobyVote: req.params.pet === "toby"
+			}
+		);
+	} else {
+		res.render('voteError');
+	}
+});
+
 // 404 catch-all handler (middleware)
 app.use(function(req, res, next){
 	res.status(404);
